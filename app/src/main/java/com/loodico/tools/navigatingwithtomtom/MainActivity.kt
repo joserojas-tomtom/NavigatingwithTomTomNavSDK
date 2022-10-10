@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
                 // now we take the place, let's get the coordinates
                 // and create a route!  Easy!
                 createRoute(place.position)
+                searchFragment.clear()
             }
 
             override fun onSearchError(throwable: Throwable) {
