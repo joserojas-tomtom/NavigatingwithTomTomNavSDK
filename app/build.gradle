@@ -46,6 +46,8 @@ dependencies {
     implementation "com.tomtom.sdk:location-mapmatched:$version"
     implementation "com.tomtom.sdk:navigation:$version"
     implementation "com.tomtom.sdk:navigation-ui:$version"
+    implementation "com.tomtom.sdk:search-client-online:0.3.196"
+    implementation "com.tomtom.sdk:search-ui:0.3.196"
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'

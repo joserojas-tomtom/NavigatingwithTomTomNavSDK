@@ -5,14 +5,17 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.widget.Toast
 import com.tomtom.sdk.common.location.GeoCoordinate
+import com.tomtom.sdk.common.location.GeoLocation
 import com.tomtom.sdk.common.route.Route
 import com.tomtom.sdk.common.route.section.travelmode.TravelMode
+import com.tomtom.sdk.location.OnLocationUpdateListener
 import com.tomtom.sdk.location.android.AndroidLocationEngine
 import com.tomtom.sdk.location.mapmatched.MapMatchedLocationEngine
 import com.tomtom.sdk.location.simulation.SimulationLocationEngine
 
 import com.tomtom.sdk.maps.display.MapOptions
 import com.tomtom.sdk.maps.display.TomTomMap
+import com.tomtom.sdk.maps.display.camera.CameraOptions
 import com.tomtom.sdk.maps.display.camera.CameraTrackingMode
 import com.tomtom.sdk.maps.display.common.screen.Padding
 import com.tomtom.sdk.maps.display.location.LocationMarkerOptions
@@ -32,6 +35,12 @@ import com.tomtom.sdk.routing.api.guidance.AnnouncementPoints
 import com.tomtom.sdk.routing.api.guidance.InstructionPhoneticsType
 import com.tomtom.sdk.routing.api.guidance.InstructionType
 import com.tomtom.sdk.routing.online.OnlineRoutingApi
+import com.tomtom.sdk.search.online.client.OnlineSearchApi
+import com.tomtom.sdk.search.ui.SearchFragment
+import com.tomtom.sdk.search.ui.SearchFragmentListener
+import com.tomtom.sdk.search.ui.model.Place
+import com.tomtom.sdk.search.ui.model.SearchApiParameters
+import com.tomtom.sdk.search.ui.model.SearchProperties
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navigationFragment: NavigationFragment
@@ -40,7 +49,21 @@ class MainActivity : AppCompatActivity() {
     private lateinit var planRouteOptions: PlanRouteOptions
     private lateinit var locationEngine: AndroidLocationEngine
     private lateinit var tomTomMap: TomTomMap
-    private val APIKEY= "ADD YOUR API KEY HERE" // https://developer.tomtom.com/user/register
+    private val APIKEY= "YOUR API KEY HERE" // https://developer.tomtom.com/user/register
+
+    private val AMSTERDAM = GeoCoordinate(52.377956, 4.897070)
+    // Search API
+    val searchApi = OnlineSearchApi.create(this, APIKEY)
+
+    val searchApiParameters = SearchApiParameters(
+        limit = 5,
+        position = AMSTERDAM
+    )
+    val searchProperties = SearchProperties(
+        searchApiKey = APIKEY,
+        searchApiParameters = searchApiParameters,
+        commands = listOf("TomTom")
+    )
 
     // Routing API
     private lateinit var routingApi: RoutingApi
@@ -48,6 +71,41 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Add the search UI map fragment
+        val searchFragment = SearchFragment.newInstance(searchProperties)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.search_fragment_container, searchFragment)
+            .commitNow()
+
+        // add the search API to the search fragment
+        searchFragment.setSearchApi(searchApi)
+
+        // Add the listener when someone click on a suggestion
+        val searchFragmentListener = object : SearchFragmentListener {
+            override fun onSearchBackButtonClick() {
+                /* YOUR CODE GOES HERE */
+            }
+
+            override fun onSearchResultClick(place: Place) {
+                // now we take the place, let's get the coordinates
+                // and create a route!  Easy!
+                createRoute(place.position)
+            }
+
+            override fun onSearchError(throwable: Throwable) {
+                /* YOUR CODE GOES HERE */
+            }
+
+            override fun onSearchQueryChanged(input: String) {
+                /* YOUR CODE GOES HERE */
+            }
+
+            override fun onCommandInsert(command: String) {
+                /* YOUR CODE GOES HERE */
+            }
+        }
+        searchFragment.setFragmentListener(searchFragmentListener)
 
         // Add a map fragment
         val mapOptions = MapOptions(mapKey = APIKEY)
@@ -59,6 +117,8 @@ class MainActivity : AppCompatActivity() {
         // Location Engine
         locationEngine = AndroidLocationEngine(context = this)
         locationEngine.enable()
+
+        // Deactivate this later  --
 
         // Add routing API
         routingApi = OnlineRoutingApi.create(context = this, apiKey = APIKEY)
@@ -74,6 +134,8 @@ class MainActivity : AppCompatActivity() {
 
         mapFragment.getMapAsync { map ->
             tomTomMap = map
+            val initialOptions = CameraOptions(zoom = 16.0, position = AMSTERDAM )
+            tomTomMap.moveCamera(initialOptions)
             enableUserLocation()
             setUpMapListeners()
         }
@@ -197,13 +259,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpMapListeners() {
-        tomTomMap.addOnMapLongClickListener { coordinate: GeoCoordinate ->
-            createRoute(coordinate)
-            return@addOnMapLongClickListener true
-        }
+        // We are creating the route now when we select a results.. this is not needed anymore
+//        tomTomMap.addOnMapLongClickListener { coordinate: GeoCoordinate ->
+//            createRoute(coordinate)
+//            return@addOnMapLongClickListener true
+//        }
+
         tomTomMap.addOnMapClickListener { coordinate: GeoCoordinate ->
             navigate()
             return@addOnMapClickListener true
         }
+
+        // We are going to listen to the current location to move the map
+        // initially, but when we are navigating this is done automatically,
+        // so this listener should be deactivated.
+        val locationUpdateListener = object : OnLocationUpdateListener {
+            override fun onLocationUpdate(location: GeoLocation) {
+                    tomTomMap.moveCamera(CameraOptions(position = location.position))
+            }
+        }
+        locationEngine.addOnLocationUpdateListener(locationUpdateListener)
     }
 }
