@@ -38,7 +38,7 @@ android {
 dependencies {
 
     // ADD TOMTOM libraries here
-    def version = "0.3.196"
+    def version = "0.3.773"
     implementation "com.tomtom.sdk:maps-display:$version"
     implementation "com.tomtom.sdk:routing-client-online:$version"
     implementation "com.tomtom.sdk:location-android:$version"
@@ -46,8 +46,9 @@ dependencies {
     implementation "com.tomtom.sdk:location-mapmatched:$version"
     implementation "com.tomtom.sdk:navigation:$version"
     implementation "com.tomtom.sdk:navigation-ui:$version"
-    implementation "com.tomtom.sdk:search-client-online:0.3.196"
-    implementation "com.tomtom.sdk:search-ui:0.3.196"
+    implementation "com.tomtom.sdk:navigation-dynamic-routing-online:$version"
+    implementation "com.tomtom.sdk:search-client-online:$version"
+    implementation "com.tomtom.sdk:search-ui:$version"
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
