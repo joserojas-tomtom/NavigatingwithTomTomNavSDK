@@ -11,11 +11,18 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven {
+//            credentials {
+//                username = 'Your username credential from our repo'
+//                password = 'Add here the token from your account'
+//            }
+//            url = uri("https://repositories.tomtom.com/artifactory/maven")
+
             credentials {
-                username = 'Your username credential from our repo'
-                password = 'Add here the token from your account'
+                username = 'jose.rojas@tomtom.com'
+                password = 'cmVmdGtuOjAxOjE2OTA1NDU4ODQ6UlNPYTFVTGc3WGU2eUdNeVZLQ1dSZkozQUph'
             }
             url = uri("https://repositories.tomtom.com/artifactory/maven")
+
         }
     }
 }

@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Navigating with TomTom</string>
+    <string name="title_activity_map_demo_detail_host">MapDemoDetailHostActivity</string>
+    <string name="title_mapdemo_list">ItemsMapDemos</string>
+    <string name="title_mapdemo_detail">MapDemo Detail</string>
 </resources>
