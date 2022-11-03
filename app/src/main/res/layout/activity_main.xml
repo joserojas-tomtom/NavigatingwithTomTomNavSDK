@@ -7,13 +7,22 @@
     tools:context=".MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
+        xmlns:tomtom="http://schemas.android.com/apk/res-auto"
         android:id="@+id/map_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tomtom:cameraTilt="45"
+        tomtom:cameraPositionZoom="20"/>
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/navigation_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/map_container" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/search_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="@+id/map_container"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
