@@ -8,132 +8,136 @@
     android:layout_marginRight="10dp"
     tools:context=".MainMenu">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="729dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.47"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="729dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.47"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:height="80dp"
-            android:focusable="false"
-            android:fontFamily="casual"
-            android:paddingTop="40dp"
-            android:text="Main Menu"
-            android:textAlignment="center"
-            android:textAllCaps="true"
-            android:textSize="24sp"
-            app:lineHeight="20dp" />
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:height="80dp"
+                android:focusable="false"
+                android:fontFamily="casual"
+                android:paddingTop="40dp"
+                android:text="Main Menu"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textSize="24sp"
+                app:lineHeight="20dp" />
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:height="90dp"
-            android:backgroundTint="#2196F3"
-            android:drawableLeft="@android:drawable/ic_menu_mylocation"
-            android:drawableTint="#FFFEFE"
-            android:onClick="launchBasicDriving"
-            android:padding="20dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:text="Basic driving app"
-            android:textAlignment="textStart"
-            app:cornerRadius="20dp" />
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:height="90dp"
+                android:backgroundTint="#2196F3"
+                android:drawableLeft="@android:drawable/ic_menu_mylocation"
+                android:drawableTint="#FFFEFE"
+                android:onClick="launchBasicDriving"
+                android:padding="20dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="Basic driving app"
+                android:textAlignment="textStart"
+                app:cornerRadius="20dp" />
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider" />
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:background="?android:attr/listDivider" />
 
-        <Button
-            android:id="@+id/button7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="5dp"
-            android:height="90dp"
-            android:backgroundTint="#FFFFFF"
-            android:drawableLeft="@android:drawable/ic_menu_mapmode"
-            android:drawableTint="#000000"
-            android:foregroundTint="#00000000"
-            android:text="Maps"
-            android:textAlignment="textStart"
-            android:textColor="@android:color/darker_gray"
-            app:cornerRadius="20dp" />
+            <Button
+                android:id="@+id/button7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="5dp"
+                android:height="90dp"
+                android:backgroundTint="#FFFFFF"
+                android:drawableLeft="@android:drawable/ic_menu_mapmode"
+                android:drawableTint="#000000"
+                android:foregroundTint="#00000000"
+                android:text="Maps"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/darker_gray"
+                app:cornerRadius="20dp" />
 
-        <Button
-            android:id="@+id/button14"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="5dp"
-            android:height="90dp"
-            android:backgroundTint="#FFFFFF"
-            android:drawableLeft="@android:drawable/ic_menu_search"
-            android:drawableTint="#000000"
-            android:foregroundTint="#00000000"
-            android:text="Search"
-            android:textAlignment="textStart"
-            android:textColor="@android:color/darker_gray"
-            app:cornerRadius="20dp" />
+            <Button
+                android:id="@+id/button14"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="5dp"
+                android:height="90dp"
+                android:backgroundTint="#FFFFFF"
+                android:drawableLeft="@android:drawable/ic_menu_search"
+                android:drawableTint="#000000"
+                android:foregroundTint="#00000000"
+                android:text="Search"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/darker_gray"
+                app:cornerRadius="20dp" />
 
-        <Button
-            android:id="@+id/button15"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="5dp"
-            android:height="90dp"
-            android:backgroundTint="#FFFFFF"
-            android:drawableLeft="@drawable/pin"
-            android:drawableTint="#000000"
-            android:foregroundTint="#00000000"
-            android:text="Routing"
-            android:textAlignment="textStart"
-            android:textColor="@android:color/darker_gray"
-            app:cornerRadius="20dp" />
+            <Button
+                android:id="@+id/button15"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="5dp"
+                android:height="90dp"
+                android:backgroundTint="#FFFFFF"
+                android:drawableLeft="@drawable/pin"
+                android:drawableTint="#000000"
+                android:foregroundTint="#00000000"
+                android:text="Routing"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/darker_gray"
+                app:cornerRadius="20dp" />
 
-        <Button
-            android:id="@+id/button16"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="5dp"
-            android:height="90dp"
-            android:backgroundTint="#FFFFFF"
-            android:drawableLeft="@android:drawable/ic_menu_mylocation"
-            android:drawableTint="#000000"
-            android:foregroundTint="#00000000"
-            android:text="Navigation"
-            android:textAlignment="textStart"
-            android:textColor="@android:color/darker_gray"
-            app:cornerRadius="20dp" />
+            <Button
+                android:id="@+id/button16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="5dp"
+                android:height="90dp"
+                android:backgroundTint="#FFFFFF"
+                android:drawableLeft="@android:drawable/ic_menu_mylocation"
+                android:drawableTint="#000000"
+                android:foregroundTint="#00000000"
+                android:text="Navigation"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/darker_gray"
+                app:cornerRadius="20dp" />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="TomTom"
-            android:textAlignment="center" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="TomTom"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

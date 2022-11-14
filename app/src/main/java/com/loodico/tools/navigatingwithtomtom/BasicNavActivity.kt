@@ -52,8 +52,9 @@ import com.tomtom.sdk.search.ui.model.SearchApiParameters
 import com.tomtom.sdk.search.ui.model.SearchProperties
 
 
-class BasicNavActivity : AppCompatActivity() {
-    private lateinit var searchMarker: Marker
+class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOptionsInterface{
+    private var searchMarker: Marker? = null
+    private lateinit var routingFragment: RouteProcessFragment
     private lateinit var navigationFragment: NavigationFragment
     private lateinit var tomtomNavigation: TomTomNavigation
     private lateinit var route: Route
@@ -66,6 +67,7 @@ class BasicNavActivity : AppCompatActivity() {
 
     private val AMSTERDAM = GeoCoordinate(52.377956, 4.897070)
 
+    // SearchFragment Configuration
     val searchApiParameters = SearchApiParameters(
         limit = 5,
         position = AMSTERDAM
@@ -76,12 +78,18 @@ class BasicNavActivity : AppCompatActivity() {
         commands = listOf("TomTom")
     )
     val searchFragment = SearchFragment.newInstance(searchProperties)
+    // Search API
+    private lateinit var searchApi: SearchApi
 
     // Routing API
     private lateinit var routingApi: RoutingApi
 
-    // Search API
-    private lateinit var searchApi: SearchApi
+    private fun addRoutingOptionsFragment(place: Place) {
+        routingFragment = RouteProcessFragment.newInstance(place, this)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.route_fragment_container, routingFragment)
+            .commitNow()
+    }
 
     // Call this to add the search functionality to the activity
     private fun addSearchFragment() {
@@ -97,7 +105,8 @@ class BasicNavActivity : AppCompatActivity() {
         // Add the listener when someone click on a suggestion
         val searchFragmentListener = object : SearchFragmentListener {
             override fun onSearchBackButtonClick() {
-                /* YOUR CODE GOES HERE */
+                removeMarker()
+                searchFragment.clear()
             }
 
             override fun onSearchResultClick(place: Place) {
@@ -111,7 +120,6 @@ class BasicNavActivity : AppCompatActivity() {
                 }
                 
                 setMarker(place.position)
-                //createRoute(place.position)
                 searchFragment.clear()
                 removeSearchFragment()
 
@@ -120,6 +128,9 @@ class BasicNavActivity : AppCompatActivity() {
                     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
                 }
+
+                // add the Routing process fragment
+                addRoutingOptionsFragment(place)
             }
 
             override fun onSearchError(throwable: Throwable) {
@@ -138,11 +149,14 @@ class BasicNavActivity : AppCompatActivity() {
 
     }
 
-    // set a merker to the coordinates. It gets replaced everytime
+    private fun removeMarker() {
+        searchMarker?.remove()
+        searchMarker = null
+
+    }
+    // set a marker to the coordinates. It gets replaced everytime
     private fun setMarker(position: GeoCoordinate) {
-        if (this::searchMarker.isInitialized) {
-            searchMarker.remove()
-        }
+        searchMarker?.remove()
         val markerOptions = MarkerOptions(
             coordinate = position,
             pinImage = ImageFactory.fromResource(com.tomtom.sdk.search.ui.R.drawable.ic_pin)
@@ -157,13 +171,18 @@ class BasicNavActivity : AppCompatActivity() {
             .commitNow()
     }
 
+    // Remove the routing options
+    private fun removeRoutingOptionsFragment() {
+        supportFragmentManager.beginTransaction()
+            .remove(routingFragment)
+            .commitNow()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         searchApi = OnlineSearchApi.create(this, APIKEY)
-
-        addSearchFragment()
 
         // Add a map fragment
         val mapOptions = MapOptions(mapKey = APIKEY)
@@ -216,6 +235,7 @@ class BasicNavActivity : AppCompatActivity() {
             tomTomMap.moveCamera(initialOptions)
             enableUserLocation()
             setUpMapListeners()
+            addSearchFragment()
         }
 
         val navigationUiOptions = NavigationUiOptions(
@@ -272,6 +292,7 @@ class BasicNavActivity : AppCompatActivity() {
 
     private fun navigate() {
         if ( this::route.isInitialized ) { // start the navgation with a set route
+            removeRoutingOptionsFragment() // we want full screen for navigation
             try {
                 val routePlan = RoutePlan(route, planRouteOptions)
                 navigationFragment.startNavigation(routePlan)
@@ -294,6 +315,7 @@ class BasicNavActivity : AppCompatActivity() {
         override fun onSuccess(result: RoutePlanningResult) {
             route = result.routes.first()
             drawRoute(route)
+            navigate()
         }
 
         override fun onError(error: RoutingError) {
@@ -375,5 +397,14 @@ class BasicNavActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         locationEngine.removeOnLocationUpdateListener(locationUpdateListener)
+    }
+
+    override fun onNavigate(destination: GeoCoordinate) {
+        createRoute(destination)
+    }
+
+    override fun onCancel() {
+        removeRoutingOptionsFragment()
+        addSearchFragment()
     }
 }

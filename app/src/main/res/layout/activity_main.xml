@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/parentContainer"
-    tools:context=".MainActivity">
+    tools:context=".BasicNavActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map_container"
@@ -25,10 +25,15 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/search_fragment_container"
-        android:background="@color/white"
+        android:imeOptions="actionSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/parentContainer"
         />
-
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/route_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/parentContainer"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
