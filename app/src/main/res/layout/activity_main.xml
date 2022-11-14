@@ -4,15 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/parentContainer"
     tools:context=".MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
-        xmlns:tomtom="http://schemas.android.com/apk/res-auto"
         android:id="@+id/map_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tomtom:cameraTilt="45"
-        tomtom:cameraPositionZoom="20"/>
+        android:layout_marginBottom="132dp"
+        app:cameraPositionZoom="20"
+        app:cameraTilt="45"
+        app:layout_constraintBottom_toTopOf="@id/search_fragment_container"
+        tools:layout_editor_absoluteX="-16dp" />
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/navigation_fragment_container"
         android:layout_width="match_parent"
@@ -21,8 +25,10 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/search_fragment_container"
+        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="@+id/map_container"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/parentContainer"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

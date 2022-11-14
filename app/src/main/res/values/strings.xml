@@ -3,4 +3,6 @@
     <string name="title_activity_map_demo_detail_host">MapDemoDetailHostActivity</string>
     <string name="title_mapdemo_list">ItemsMapDemos</string>
     <string name="title_mapdemo_detail">MapDemo Detail</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

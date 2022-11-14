@@ -3,11 +3,11 @@ package com.loodico.tools.navigatingwithtomtom
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.tomtom.sdk.common.location.GeoCoordinate
 import com.tomtom.sdk.common.location.GeoLocation
@@ -15,14 +15,16 @@ import com.tomtom.sdk.common.route.Route
 import com.tomtom.sdk.location.OnLocationUpdateListener
 import com.tomtom.sdk.location.android.AndroidLocationEngine
 import com.tomtom.sdk.location.mapmatched.MapMatchedLocationEngine
-
 import com.tomtom.sdk.maps.display.MapOptions
 import com.tomtom.sdk.maps.display.TomTomMap
 import com.tomtom.sdk.maps.display.camera.CameraOptions
 import com.tomtom.sdk.maps.display.camera.CameraTrackingMode
 import com.tomtom.sdk.maps.display.common.screen.Padding
+import com.tomtom.sdk.maps.display.image.ImageFactory
 import com.tomtom.sdk.maps.display.location.LocationMarkerOptions
 import com.tomtom.sdk.maps.display.location.LocationMarkerType
+import com.tomtom.sdk.maps.display.marker.Marker
+import com.tomtom.sdk.maps.display.marker.MarkerOptions
 import com.tomtom.sdk.maps.display.route.Instruction
 import com.tomtom.sdk.maps.display.route.RouteOptions
 import com.tomtom.sdk.maps.display.ui.MapFragment
@@ -34,14 +36,12 @@ import com.tomtom.sdk.navigation.dynamicrouting.api.DynamicRoutingApi
 import com.tomtom.sdk.navigation.dynamicrouting.online.OnlineDynamicRoutingApi
 import com.tomtom.sdk.navigation.ui.NavigationFragment
 import com.tomtom.sdk.navigation.ui.NavigationUiOptions
-
 import com.tomtom.sdk.routing.api.*
 import com.tomtom.sdk.routing.common.RoutingError
 import com.tomtom.sdk.routing.common.options.Itinerary
 import com.tomtom.sdk.routing.common.options.RoutePlanningOptions
 import com.tomtom.sdk.routing.common.options.guidance.*
 import com.tomtom.sdk.routing.common.options.vehicle.Vehicle
-
 import com.tomtom.sdk.routing.online.OnlineRoutingApi
 import com.tomtom.sdk.search.client.SearchApi
 import com.tomtom.sdk.search.online.client.OnlineSearchApi
@@ -53,6 +53,7 @@ import com.tomtom.sdk.search.ui.model.SearchProperties
 
 
 class BasicNavActivity : AppCompatActivity() {
+    private lateinit var searchMarker: Marker
     private lateinit var navigationFragment: NavigationFragment
     private lateinit var tomtomNavigation: TomTomNavigation
     private lateinit var route: Route
@@ -61,7 +62,7 @@ class BasicNavActivity : AppCompatActivity() {
     private lateinit var tomTomMap: TomTomMap
     private lateinit var dynamicRoutingApi: DynamicRoutingApi
 
-    private val APIKEY= "Vn26cA8knt2E8sl0WBEWvAgWGRUf59mm" // https://developer.tomtom.com/user/register
+    private val APIKEY= BuildConfig.TomTomApiKey // https://developer.tomtom.com/user/register
 
     private val AMSTERDAM = GeoCoordinate(52.377956, 4.897070)
 
@@ -74,6 +75,7 @@ class BasicNavActivity : AppCompatActivity() {
         searchApiParameters = searchApiParameters,
         commands = listOf("TomTom")
     )
+    val searchFragment = SearchFragment.newInstance(searchProperties)
 
     // Routing API
     private lateinit var routingApi: RoutingApi
@@ -81,14 +83,10 @@ class BasicNavActivity : AppCompatActivity() {
     // Search API
     private lateinit var searchApi: SearchApi
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        searchApi = OnlineSearchApi.create(this, APIKEY)
-
+    // Call this to add the search functionality to the activity
+    private fun addSearchFragment() {
         // Add the search UI map fragment
-        val searchFragment = SearchFragment.newInstance(searchProperties)
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.search_fragment_container, searchFragment)
             .commitNow()
@@ -104,9 +102,18 @@ class BasicNavActivity : AppCompatActivity() {
 
             override fun onSearchResultClick(place: Place) {
                 // now we take the place, let's get the coordinates
-                // and create a route!  Easy!
-                createRoute(place.position)
+
+                try {
+                    tomTomMap.moveCamera(CameraOptions(position = place.position))
+                } catch (exception: Exception) {
+                    // do nothing because the map could be already
+                    // invalidaded.
+                }
+                
+                setMarker(place.position)
+                //createRoute(place.position)
                 searchFragment.clear()
+                removeSearchFragment()
 
                 //Let's hide the keyboard if we have it
                 if (currentFocus != null) {
@@ -128,6 +135,35 @@ class BasicNavActivity : AppCompatActivity() {
             }
         }
         searchFragment.setFragmentListener(searchFragmentListener)
+
+    }
+
+    // set a merker to the coordinates. It gets replaced everytime
+    private fun setMarker(position: GeoCoordinate) {
+        if (this::searchMarker.isInitialized) {
+            searchMarker.remove()
+        }
+        val markerOptions = MarkerOptions(
+            coordinate = position,
+            pinImage = ImageFactory.fromResource(com.tomtom.sdk.search.ui.R.drawable.ic_pin)
+        )
+        searchMarker = this.tomTomMap.addMarker(markerOptions)
+    }
+
+    // Remove the search fragment
+    private fun removeSearchFragment() {
+        supportFragmentManager.beginTransaction()
+            .remove(searchFragment)
+            .commitNow()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        searchApi = OnlineSearchApi.create(this, APIKEY)
+
+        addSearchFragment()
 
         // Add a map fragment
         val mapOptions = MapOptions(mapKey = APIKEY)
@@ -235,9 +271,15 @@ class BasicNavActivity : AppCompatActivity() {
     }
 
     private fun navigate() {
-        val routePlan = RoutePlan( route , planRouteOptions)
-        navigationFragment.startNavigation(routePlan)
-        navigationFragment.addNavigationListener(navigationListener)
+        if ( this::route.isInitialized ) { // start the navgation with a set route
+            try {
+                val routePlan = RoutePlan(route, planRouteOptions)
+                navigationFragment.startNavigation(routePlan)
+                navigationFragment.addNavigationListener(navigationListener)
+            } catch (exception: IllegalArgumentException) {
+                Toast.makeText(this@BasicNavActivity, "Error. Maybe the navigation already started?", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun enableUserLocation() {
@@ -306,27 +348,32 @@ class BasicNavActivity : AppCompatActivity() {
         routingApi.planRoute( planRouteOptions, routePlanningCallback)
     }
 
+    // We are going to listen to the current location to move the map
+    // initially, but when we are navigating this is done automatically,
+    // so this listener should be deactivated.
+    private val locationUpdateListener = object : OnLocationUpdateListener {
+        override fun onLocationUpdate(location: GeoLocation) {
+            try {
+                tomTomMap.moveCamera(CameraOptions(position = location.position))
+            } catch (exception: Exception) {
+                // do nothing because the map could be already
+                // invalidaded.
+            }
+        }
+    }
+
     private fun setUpMapListeners() {
-        // We are creating the route now when we select a results.. this is not needed anymore
 
-//        tomTomMap.addOnMapLongClickListener { coordinate: GeoCoordinate ->
-//            createRoute(coordinate)
-//            return@addOnMapLongClickListener true
-//        }
-
-        tomTomMap.addOnMapClickListener { coordinate: GeoCoordinate ->
+        tomTomMap.addOnMapClickListener {
             navigate()
             return@addOnMapClickListener true
         }
 
-        // We are going to listen to the current location to move the map
-        // initially, but when we are navigating this is done automatically,
-        // so this listener should be deactivated.
-        val locationUpdateListener = object : OnLocationUpdateListener {
-            override fun onLocationUpdate(location: GeoLocation) {
-                tomTomMap.moveCamera(CameraOptions(position = location.position))
-            }
-        }
-        locationEngine.addOnLocationUpdateListener(locationUpdateListener)
+        // locationEngine.addOnLocationUpdateListener(locationUpdateListener)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        locationEngine.removeOnLocationUpdateListener(locationUpdateListener)
     }
 }

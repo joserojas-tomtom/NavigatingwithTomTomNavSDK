@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/layout/activity_mapdemo_detail.xml" value="0.1752786220871327" />
         <entry key="app/src/main/res/layout/fragment_mapdemo_detail.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fragment_mapdemo_list.xml" value="0.1752786220871327" />
+        <entry key="app/src/main/res/layout/fragment_route_process.xml" value="0.265625" />
         <entry key="app/src/main/res/layout/mapdemo_list_content.xml" value="0.1752786220871327" />
       </map>
     </option>
