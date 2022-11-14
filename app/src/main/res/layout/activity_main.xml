@@ -1,39 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parentContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/parentContainer"
+    android:orientation="vertical"
     tools:context=".BasicNavActivity">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/map_container"
+    <FrameLayout
+        android:id="@+id/nav_group_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="132dp"
-        app:cameraPositionZoom="20"
-        app:cameraTilt="45"
-        app:layout_constraintBottom_toTopOf="@id/search_fragment_container"
-        tools:layout_editor_absoluteX="-16dp" />
+        android:layout_height="0dp"
+        android:layout_weight="4">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/navigation_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/map_container" />
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/map_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/search_fragment_container"
-        android:imeOptions="actionSearch"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/navigation_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/parentContainer"
-        />
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/route_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/parentContainer"
-        />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/search_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/route_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+
+</LinearLayout>

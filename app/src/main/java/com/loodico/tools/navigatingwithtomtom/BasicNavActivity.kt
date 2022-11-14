@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -53,18 +55,46 @@ import com.tomtom.sdk.search.ui.model.SearchProperties
 
 
 class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOptionsInterface{
+    // this is the frame layout container of the map and navigation fragments
+    private lateinit var navGroupContainer: FrameLayout
+
+    // Only marker in the map : the selected destination
     private var searchMarker: Marker? = null
+
+    // The view that contain the "Navigate" button when we select a destination
     private lateinit var routingFragment: RouteProcessFragment
+
+    // The NavSDK view
     private lateinit var navigationFragment: NavigationFragment
+
+    // the navigation
     private lateinit var tomtomNavigation: TomTomNavigation
+
+    // The route object created when we select a destination
     private lateinit var route: Route
+
+    // Route options as type of vehicle, size, etc
     private lateinit var planRouteOptions: RoutePlanningOptions
+
+    // Who is providing the GPS location?
     private lateinit var locationEngine: AndroidLocationEngine
+
+    // The Map view object
     private lateinit var tomTomMap: TomTomMap
+
+    // Search API
+    private lateinit var searchApi: SearchApi
+
+    // Routing API
+    private lateinit var routingApi: RoutingApi
+
+    // Dynamic routing engine for creating routes.
     private lateinit var dynamicRoutingApi: DynamicRoutingApi
 
+    // API Key for map and apis
     private val APIKEY= BuildConfig.TomTomApiKey // https://developer.tomtom.com/user/register
 
+    // Default map center
     private val AMSTERDAM = GeoCoordinate(52.377956, 4.897070)
 
     // SearchFragment Configuration
@@ -72,17 +102,14 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
         limit = 5,
         position = AMSTERDAM
     )
+
     val searchProperties = SearchProperties(
         searchApiKey = APIKEY,
         searchApiParameters = searchApiParameters,
         commands = listOf("TomTom")
     )
-    val searchFragment = SearchFragment.newInstance(searchProperties)
-    // Search API
-    private lateinit var searchApi: SearchApi
 
-    // Routing API
-    private lateinit var routingApi: RoutingApi
+    val searchFragment = SearchFragment.newInstance(searchProperties)
 
     private fun addRoutingOptionsFragment(place: Place) {
         routingFragment = RouteProcessFragment.newInstance(place, this)
@@ -110,6 +137,8 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
             }
 
             override fun onSearchResultClick(place: Place) {
+                // make nav and map visible again
+                navGroupContainer.setVisibility(View.VISIBLE)
                 // now we take the place, let's get the coordinates
 
                 try {
@@ -138,7 +167,12 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
             }
 
             override fun onSearchQueryChanged(input: String) {
-                /* YOUR CODE GOES HERE */
+                // hide and show the map...
+                if (input.length > 0) {
+                    navGroupContainer.setVisibility(View.GONE)
+                } else {
+                    navGroupContainer.setVisibility(View.VISIBLE)
+                }
             }
 
             override fun onCommandInsert(command: String) {
@@ -247,6 +281,8 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
             .commitNow()
 
         navigationFragment.setTomTomNavigation(tomtomNavigation)
+
+        navGroupContainer = findViewById<FrameLayout>(R.id.nav_group_container)
     }
 
     private fun setMapMatchedLocationEngine() {
