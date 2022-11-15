@@ -56,13 +56,15 @@
             <View
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
-                android:layout_height="10dp"
+                android:layout_height="1dp"
+                android:padding="5dp"
                 android:background="?android:attr/listDivider" />
 
             <Button
                 android:id="@+id/button7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="launchMapDemo"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="20dp"
@@ -81,6 +83,7 @@
                 android:id="@+id/button14"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="launchSearchDemo"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="20dp"
@@ -99,6 +102,7 @@
                 android:id="@+id/button15"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="launchRoutingDemo"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="20dp"
@@ -117,6 +121,7 @@
                 android:id="@+id/button16"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="launchNavigationDemo"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="20dp"
@@ -131,13 +136,30 @@
                 android:textColor="@android:color/darker_gray"
                 app:cornerRadius="20dp" />
 
-            <TextView
-                android:id="@+id/textView2"
+            <Button
+                android:id="@+id/button17"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="TomTom"
-                android:textAlignment="center" />
+                android:onClick="launchOfflineMapsDemo"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="5dp"
+                android:height="90dp"
+                android:backgroundTint="#FFFFFF"
+                android:drawableLeft="@android:drawable/ic_menu_mylocation"
+                android:drawableTint="#000000"
+                android:foregroundTint="#00000000"
+                android:text="Offline maps"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/darker_gray"
+                app:cornerRadius="20dp" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_tomtom_logo" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
