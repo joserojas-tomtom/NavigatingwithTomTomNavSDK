@@ -4,5 +4,12 @@
     <string name="title_mapdemo_list">ItemsMapDemos</string>
     <string name="title_mapdemo_detail">MapDemo Detail</string>
     <string name="navigate">Navigate</string>
+    <string name="main_menu">Main Menu</string>
+    <string name="basic_driving_app">Basic driving app</string>
+    <string name="map">Map demo</string>
+    <string name="search">Search demo</string>
+    <string name="routing">Routing demo</string>
+    <string name="navigation">Navigation demo</string>
+    <string name="offline_maps">Offline maps demo</string>
 
 </resources>

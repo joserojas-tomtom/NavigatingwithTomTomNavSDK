@@ -29,7 +29,7 @@
                 android:focusable="false"
                 android:fontFamily="casual"
                 android:paddingTop="40dp"
-                android:text="Main Menu"
+                android:text="@string/main_menu"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textSize="24sp"
@@ -49,7 +49,7 @@
                 android:padding="20dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:text="Basic driving app"
+                android:text="@string/basic_driving_app"
                 android:textAlignment="textStart"
                 app:cornerRadius="20dp" />
 
@@ -74,7 +74,7 @@
                 android:drawableLeft="@android:drawable/ic_menu_mapmode"
                 android:drawableTint="#000000"
                 android:foregroundTint="#00000000"
-                android:text="Maps"
+                android:text="@string/map"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/darker_gray"
                 app:cornerRadius="20dp" />
@@ -93,7 +93,7 @@
                 android:drawableLeft="@android:drawable/ic_menu_search"
                 android:drawableTint="#000000"
                 android:foregroundTint="#00000000"
-                android:text="Search"
+                android:text="@string/search"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/darker_gray"
                 app:cornerRadius="20dp" />
@@ -112,7 +112,7 @@
                 android:drawableLeft="@drawable/pin"
                 android:drawableTint="#000000"
                 android:foregroundTint="#00000000"
-                android:text="Routing"
+                android:text="@string/routing"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/darker_gray"
                 app:cornerRadius="20dp" />
@@ -131,7 +131,7 @@
                 android:drawableLeft="@android:drawable/ic_menu_mylocation"
                 android:drawableTint="#000000"
                 android:foregroundTint="#00000000"
-                android:text="Navigation"
+                android:text="@string/navigation"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/darker_gray"
                 app:cornerRadius="20dp" />
@@ -150,16 +150,11 @@
                 android:drawableLeft="@android:drawable/ic_menu_mylocation"
                 android:drawableTint="#000000"
                 android:foregroundTint="#00000000"
-                android:text="Offline maps"
+                android:text="@string/offline_maps"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/darker_gray"
                 app:cornerRadius="20dp" />
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_tomtom_logo" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
