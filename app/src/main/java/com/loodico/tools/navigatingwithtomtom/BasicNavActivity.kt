@@ -258,7 +258,6 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
             context = this,
             apiKey = APIKEY,
             locationEngine = locationEngine,
-            //routingApi = routingApi
             dynamicRoutingApi = dynamicRoutingApi
         )
         tomtomNavigation = TomTomNavigation.create(navigationConfiguration)
@@ -295,6 +294,7 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
         navigationFragment.stopNavigation()
         tomTomMap.changeCameraTrackingMode(CameraTrackingMode.NONE)
         tomTomMap.enableLocationMarker(LocationMarkerOptions(LocationMarkerType.POINTER))
+        tomTomMap.removeRoutes()
     }
 
     private fun setMapNavigationPadding() {
@@ -319,16 +319,21 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
         override fun onFailed(error: NavigationError) {
             Toast.makeText(this@BasicNavActivity, error.message, Toast.LENGTH_SHORT).show()
             stopNavigation()
+            showBottomOptionsContainer()
+
         }
 
         override fun onStopped() {
             stopNavigation()
+            showBottomOptionsContainer()
+            addSearchFragment()
         }
     }
 
     private fun navigate() {
         if ( this::route.isInitialized ) { // start the navgation with a set route
-            removeRoutingOptionsFragment() // we want full screen for navigation
+            hideBottomOptionsContainer() // we want full screen for navigation
+            removeRoutingOptionsFragment()
             try {
                 val routePlan = RoutePlan(route, planRouteOptions)
                 navigationFragment.startNavigation(routePlan)
@@ -337,6 +342,16 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
                 Toast.makeText(this@BasicNavActivity, "Error. Maybe the navigation already started?", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun hideBottomOptionsContainer() {
+        val container = findViewById<FrameLayout>(R.id.bottom_group_container)
+        container.setVisibility(View.GONE)
+    }
+
+    private fun showBottomOptionsContainer() {
+        val container = findViewById<FrameLayout>(R.id.bottom_group_container)
+        container.setVisibility(View.VISIBLE)
     }
 
     private fun enableUserLocation() {
