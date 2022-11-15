@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mapdemo_list_fragment"
-        android:name="com.loodico.tools.navigatingwithtomtom.MapDemoListFragment"
+        android:name="com.loodico.tools.NavDemoApp.MapDemoListFragment"
         android:label="MapDemoListFragment">
         <action
             android:id="@+id/show_mapdemo_detail"
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/mapdemo_detail_fragment"
-        android:name="com.loodico.tools.navigatingwithtomtom.MapDemoDetailFragment"
+        android:name="com.loodico.tools.NavDemoApp.MapDemoDetailFragment"
         android:label="mapdemo_detail"
         tools:layout="@layout/fragment_mapdemo_detail">
         <argument

@@ -6,7 +6,7 @@
     app:startDestination="@id/fragment_mapdemo_detail">
     <fragment
         android:id="@+id/fragment_mapdemo_detail"
-        android:name="com.loodico.tools.navigatingwithtomtom.MapDemoDetailFragment"
+        android:name="com.loodico.tools.NavDemoApp.MapDemoDetailFragment"
         android:label="@string/title_mapdemo_detail"
         tools:layout="@layout/fragment_mapdemo_detail">
         <argument

@@ -1,4 +1,4 @@
-package com.loodico.tools.navigatingwithtomtom
+package com.loodico.tools.NavDemoApp
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,8 +13,6 @@ class MainMenu : AppCompatActivity() {
 
     fun launchBasicDriving(button : android.view.View) {
         val myIntent = Intent(this@MainMenu, BasicNavActivity::class.java)
-        // myIntent.putExtra("key", value) //Optional parameters
-
         this@MainMenu.startActivity(myIntent)
     }
 }

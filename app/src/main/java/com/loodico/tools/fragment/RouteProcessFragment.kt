@@ -1,4 +1,4 @@
-package com.loodico.tools.navigatingwithtomtom
+package com.loodico.tools.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.TextView
 import android.view.ViewGroup
 import android.widget.Button
+import com.loodico.tools.NavDemoApp.R
 import com.tomtom.sdk.common.location.GeoCoordinate
 import com.tomtom.sdk.search.ui.model.Place
 
@@ -25,7 +26,7 @@ class RouteProcessFragment(place: Place, navigationInterface: NavigateOptionsInt
     private var destination: Place = place
 
     interface NavigateOptionsInterface {
-        fun onNavigate(location: GeoCoordinate)
+        fun onNavigate(destination: GeoCoordinate)
         fun onCancel()
     }
 

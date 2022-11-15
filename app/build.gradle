@@ -7,7 +7,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.loodico.tools.navigatingwithtomtom"
+        applicationId "com.loodico.tools.NavDemoApp"
         minSdk 24
         targetSdk 32
         versionCode 1
@@ -43,6 +43,8 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
 
     // ADD TOMTOM libraries here
