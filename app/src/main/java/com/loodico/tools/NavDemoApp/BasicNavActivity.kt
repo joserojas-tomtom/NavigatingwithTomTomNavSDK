@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.loodico.tools.fragment.RouteProcessFragment
 import com.tomtom.sdk.common.location.GeoCoordinate
-import com.tomtom.sdk.common.location.GeoLocation
 import com.tomtom.sdk.common.route.Route
 import com.tomtom.sdk.location.OnLocationUpdateListener
 import com.tomtom.sdk.location.android.AndroidLocationEngine
@@ -93,19 +92,19 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
     private lateinit var dynamicRoutingApi: DynamicRoutingApi
 
     // API Key for map and apis
-    private val APIKEY= BuildConfig.TomTomApiKey // https://developer.tomtom.com/user/register
+    private val apikey= BuildConfig.TomTomApiKey // https://developer.tomtom.com/user/register
 
     // Default map center
-    private val AMSTERDAM = GeoCoordinate(52.377956, 4.897070)
+    private val amsterdamCenter = GeoCoordinate(52.377956, 4.897070)
 
     // SearchFragment Configuration
-    val searchApiParameters = SearchApiParameters(
+    private val searchApiParameters = SearchApiParameters(
         limit = 5,
-        position = AMSTERDAM
+        position = amsterdamCenter
     )
 
-    val searchProperties = SearchProperties(
-        searchApiKey = APIKEY,
+    private val searchProperties = SearchProperties(
+        searchApiKey = apikey,
         searchApiParameters = searchApiParameters,
         commands = listOf("TomTom")
     )
@@ -139,14 +138,14 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
 
             override fun onSearchResultClick(place: Place) {
                 // make nav and map visible again
-                navGroupContainer.setVisibility(View.VISIBLE)
+                navGroupContainer.visibility = View.VISIBLE
                 // now we take the place, let's get the coordinates
 
                 try {
                     tomTomMap.moveCamera(CameraOptions(position = place.position))
                 } catch (exception: Exception) {
                     // do nothing because the map could be already
-                    // invalidaded.
+                    // invalidated.
                 }
                 
                 setMarker(place.position)
@@ -169,10 +168,10 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
 
             override fun onSearchQueryChanged(input: String) {
                 // hide and show the map...
-                if (input.length > 0) {
-                    navGroupContainer.setVisibility(View.GONE)
+                if (input.isNotEmpty()) {
+                    navGroupContainer.visibility = View.GONE
                 } else {
-                    navGroupContainer.setVisibility(View.VISIBLE)
+                    navGroupContainer.visibility = View.VISIBLE
                 }
             }
 
@@ -217,10 +216,10 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        searchApi = OnlineSearchApi.create(this, APIKEY)
+        searchApi = OnlineSearchApi.create(this, apikey)
 
         // Add a map fragment
-        val mapOptions = MapOptions(mapKey = APIKEY)
+        val mapOptions = MapOptions(mapKey = apikey)
         val mapFragment = MapFragment.newInstance(mapOptions)
         supportFragmentManager.beginTransaction()
             .replace(R.id.map_container, mapFragment)
@@ -238,26 +237,23 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            val COARSE_REQUEST_CODE = 101
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
+                COARSE_REQUEST_CODE)
             return
         }
         locationEngine.enable()
 
 
         // Add routing API
-        routingApi = OnlineRoutingApi.create(context = this, apiKey = APIKEY)
+        routingApi = OnlineRoutingApi.create(context = this, apiKey = apikey)
         dynamicRoutingApi = OnlineDynamicRoutingApi.create(routingApi)
 
         // Adding Navigation
         val navigationConfiguration = NavigationConfiguration(
             context = this,
-            apiKey = APIKEY,
+            apiKey = apikey,
             locationEngine = locationEngine,
             dynamicRoutingApi = dynamicRoutingApi
         )
@@ -265,7 +261,7 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
 
         mapFragment.getMapAsync { map ->
             tomTomMap = map
-            val initialOptions = CameraOptions(zoom = 16.0, position = AMSTERDAM )
+            val initialOptions = CameraOptions(zoom = 16.0, position = amsterdamCenter )
             tomTomMap.moveCamera(initialOptions)
             enableUserLocation()
             setUpMapListeners()
@@ -279,10 +275,22 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
         supportFragmentManager.beginTransaction()
             .add(R.id.navigation_fragment_container, navigationFragment)
             .commitNow()
-
         navigationFragment.setTomTomNavigation(tomtomNavigation)
+        navGroupContainer = findViewById(R.id.nav_group_container)
+    }
 
-        navGroupContainer = findViewById<FrameLayout>(R.id.nav_group_container)
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>,
+                                            grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            101 -> {
+
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this@BasicNavActivity,"Give me access to location!", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
     private fun setMapMatchedLocationEngine() {
@@ -332,7 +340,7 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
     }
 
     private fun navigate() {
-        if ( this::route.isInitialized ) { // start the navgation with a set route
+        if ( this::route.isInitialized ) { // start the navigation with a set route
             hideBottomOptionsContainer() // we want full screen for navigation
             removeRoutingOptionsFragment()
             try {
@@ -347,12 +355,12 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
 
     private fun hideBottomOptionsContainer() {
         val container = findViewById<FrameLayout>(R.id.bottom_group_container)
-        container.setVisibility(View.GONE)
+        container.visibility = View.GONE
     }
 
     private fun showBottomOptionsContainer() {
         val container = findViewById<FrameLayout>(R.id.bottom_group_container)
-        container.setVisibility(View.VISIBLE)
+        container.visibility = View.VISIBLE
     }
 
     private fun enableUserLocation() {
@@ -400,8 +408,8 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
             instructions = instructions
         )
         tomTomMap.addRoute(routeOptions)
-        val ZOOM_PADDING = 20
-        tomTomMap.zoomToRoutes(ZOOM_PADDING)
+        val zoomPadding = 20
+        tomTomMap.zoomToRoutes(zoomPadding)
 
     }
 
@@ -425,14 +433,12 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
     // We are going to listen to the current location to move the map
     // initially, but when we are navigating this is done automatically,
     // so this listener should be deactivated.
-    private val locationUpdateListener = object : OnLocationUpdateListener {
-        override fun onLocationUpdate(location: GeoLocation) {
-            try {
-                tomTomMap.moveCamera(CameraOptions(position = location.position))
-            } catch (exception: Exception) {
-                // do nothing because the map could be already
-                // invalidaded.
-            }
+    private val locationUpdateListener = OnLocationUpdateListener { location ->
+        try {
+            tomTomMap.moveCamera(CameraOptions(position = location.position))
+        } catch (exception: Exception) {
+            // do nothing because the map could be already
+            // invalidated.
         }
     }
 
