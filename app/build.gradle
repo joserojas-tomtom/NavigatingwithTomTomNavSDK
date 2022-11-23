@@ -7,7 +7,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.loodico.tools.NavDemoApp"
+        applicationId "com.tomtom.demo.navdemoapp"
         minSdk 24
         targetSdk 32
         versionCode 1
@@ -48,7 +48,7 @@ dependencies {
 
 
     // ADD TOMTOM libraries here
-    def version = "0.3.773"
+    def version = "0.3.1014"
     implementation "com.tomtom.sdk:maps-display:$version"
     implementation "com.tomtom.sdk:routing-client-online:$version"
     implementation "com.tomtom.sdk:location-android:$version"

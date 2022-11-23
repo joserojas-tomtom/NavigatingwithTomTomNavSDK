@@ -1,11 +1,11 @@
-package com.loodico.tools.NavDemoApp
+package com.tomtom.demo.navdemoapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class NavigationDemoActivity : AppCompatActivity() {
+class RoutingDemoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_navigation_demo)
+        setContentView(R.layout.activity_routing_demo)
     }
 }

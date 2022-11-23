@@ -1,4 +1,4 @@
-package com.loodico.tools.fragment
+package com.tomtom.demo.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,12 +7,11 @@ import android.view.View
 import android.widget.TextView
 import android.view.ViewGroup
 import android.widget.Button
-import com.loodico.tools.NavDemoApp.R
-import com.tomtom.sdk.common.location.GeoCoordinate
+import com.tomtom.demo.navdemoapp.R
+import com.tomtom.sdk.common.location.GeoPoint
 import com.tomtom.sdk.search.ui.model.Place
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+// the fragment initialization parameter ARG_ADDRESS
 private const val ARG_ADDRESS = "address"
 
 /**
@@ -26,7 +25,7 @@ class RouteProcessFragment(place: Place, navigationInterface: NavigateOptionsInt
     private var destination: Place = place
 
     interface NavigateOptionsInterface {
-        fun onNavigate(destination: GeoCoordinate)
+        fun onNavigate(destination: GeoPoint)
         fun onCancel()
     }
 

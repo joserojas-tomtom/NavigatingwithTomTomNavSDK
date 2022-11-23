@@ -1,11 +1,11 @@
-package com.loodico.tools.NavDemoApp
+package com.tomtom.demo.navdemoapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class OfflineMapsDemoActivity : AppCompatActivity() {
+class NavigationDemoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_offline_maps_demo)
+        setContentView(R.layout.activity_navigation_demo)
     }
 }

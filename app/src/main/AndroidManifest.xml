@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.loodico.tools.NavDemoApp">
+    package="com.tomtom.demo.navdemoapp">
     <!-- Always include this permission -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- Include only if your app benefits from precise location access. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -17,22 +17,22 @@
         android:theme="@style/Theme.NavigatingWithTomTom"
         tools:targetApi="31">
         <activity
-            android:name=".OfflineMapsDemoActivity"
+            android:name="com.tomtom.demo.navdemoapp.OfflineMapsDemoActivity"
             android:exported="false" />
         <activity
-            android:name=".NavigationDemoActivity"
+            android:name="com.tomtom.demo.navdemoapp.NavigationDemoActivity"
             android:exported="false" />
         <activity
-            android:name=".RoutingDemoActivity"
+            android:name="com.tomtom.demo.navdemoapp.RoutingDemoActivity"
             android:exported="false" />
         <activity
-            android:name=".SearchDemoActivity"
+            android:name="com.tomtom.demo.navdemoapp.SearchDemoActivity"
             android:exported="false" />
         <activity
-            android:name=".MapDemoActivity"
+            android:name="com.tomtom.demo.navdemoapp.MapDemoActivity"
             android:exported="false" />
         <activity
-            android:name=".MainMenu"
+            android:name="com.tomtom.demo.navdemoapp.MainMenu"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".BasicNavActivity"
+            android:name="com.tomtom.demo.navdemoapp.BasicNavActivity"
             android:exported="true">
 
             <!-- <intent-filter> -->

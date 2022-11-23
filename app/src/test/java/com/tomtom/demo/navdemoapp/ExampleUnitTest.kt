@@ -1,4 +1,4 @@
-package com.loodico.tools.NavDemoApp
+package com.tomtom.demo.navdemoapp
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.loodico.tools.NavDemoApp
+package com.tomtom.demo.navdemoapp
 
 import android.Manifest
 import android.content.Context
@@ -11,42 +11,49 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.loodico.tools.fragment.RouteProcessFragment
-import com.tomtom.sdk.common.location.GeoCoordinate
-import com.tomtom.sdk.common.route.Route
+import com.tomtom.demo.fragment.RouteProcessFragment
+import com.tomtom.sdk.common.location.GeoPoint
+import com.tomtom.sdk.common.vehicle.Vehicle
 import com.tomtom.sdk.location.OnLocationUpdateListener
-import com.tomtom.sdk.location.android.AndroidLocationEngine
-import com.tomtom.sdk.location.mapmatched.MapMatchedLocationEngine
-import com.tomtom.sdk.maps.display.MapOptions
-import com.tomtom.sdk.maps.display.TomTomMap
-import com.tomtom.sdk.maps.display.camera.CameraOptions
-import com.tomtom.sdk.maps.display.camera.CameraTrackingMode
-import com.tomtom.sdk.maps.display.common.screen.Padding
-import com.tomtom.sdk.maps.display.image.ImageFactory
-import com.tomtom.sdk.maps.display.location.LocationMarkerOptions
-import com.tomtom.sdk.maps.display.location.LocationMarkerType
-import com.tomtom.sdk.maps.display.marker.Marker
-import com.tomtom.sdk.maps.display.marker.MarkerOptions
-import com.tomtom.sdk.maps.display.route.Instruction
-import com.tomtom.sdk.maps.display.route.RouteOptions
-import com.tomtom.sdk.maps.display.ui.MapFragment
+import com.tomtom.sdk.location.android.AndroidLocationProvider
+import com.tomtom.sdk.location.mapmatched.MapMatchedLocationProvider
+import com.tomtom.sdk.map.display.MapOptions
+import com.tomtom.sdk.map.display.TomTomMap
+import com.tomtom.sdk.map.display.camera.CameraOptions
+import com.tomtom.sdk.map.display.camera.CameraTrackingMode
+import com.tomtom.sdk.map.display.common.screen.Padding
+
+import com.tomtom.sdk.map.display.image.ImageFactory
+import com.tomtom.sdk.map.display.location.LocationMarkerOptions
+import com.tomtom.sdk.map.display.marker.Marker
+import com.tomtom.sdk.map.display.marker.MarkerOptions
+import com.tomtom.sdk.map.display.route.Instruction
+import com.tomtom.sdk.map.display.route.RouteOptions
+import com.tomtom.sdk.map.display.ui.MapFragment
+
 import com.tomtom.sdk.navigation.NavigationConfiguration
 import com.tomtom.sdk.navigation.NavigationError
 import com.tomtom.sdk.navigation.RoutePlan
 import com.tomtom.sdk.navigation.TomTomNavigation
-import com.tomtom.sdk.navigation.dynamicrouting.api.DynamicRoutingApi
-import com.tomtom.sdk.navigation.dynamicrouting.online.OnlineDynamicRoutingApi
+import com.tomtom.sdk.navigation.routereplanner.RouteReplanner
+import com.tomtom.sdk.navigation.routereplanner.default.DefaultRouteReplanner
+
 import com.tomtom.sdk.navigation.ui.NavigationFragment
 import com.tomtom.sdk.navigation.ui.NavigationUiOptions
-import com.tomtom.sdk.routing.api.*
+import com.tomtom.sdk.route.Route
+import com.tomtom.sdk.routing.RoutePlanner
+import com.tomtom.sdk.routing.RoutePlanningCallback
+import com.tomtom.sdk.routing.RoutePlanningResult
+
 import com.tomtom.sdk.routing.common.RoutingError
 import com.tomtom.sdk.routing.common.options.Itinerary
 import com.tomtom.sdk.routing.common.options.RoutePlanningOptions
 import com.tomtom.sdk.routing.common.options.guidance.*
-import com.tomtom.sdk.routing.common.options.vehicle.Vehicle
-import com.tomtom.sdk.routing.online.OnlineRoutingApi
-import com.tomtom.sdk.search.client.SearchApi
-import com.tomtom.sdk.search.online.client.OnlineSearchApi
+import com.tomtom.sdk.routing.online.OnlineRoutePlanner
+
+import com.tomtom.sdk.search.SearchApi
+import com.tomtom.sdk.search.online.OnlineSearchApi
+
 import com.tomtom.sdk.search.ui.SearchFragment
 import com.tomtom.sdk.search.ui.SearchFragmentListener
 import com.tomtom.sdk.search.ui.model.Place
@@ -77,7 +84,7 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
     private lateinit var planRouteOptions: RoutePlanningOptions
 
     // Who is providing the GPS location?
-    private lateinit var locationEngine: AndroidLocationEngine
+    private lateinit var locationEngine: AndroidLocationProvider
 
     // The Map view object
     private lateinit var tomTomMap: TomTomMap
@@ -86,16 +93,16 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
     private lateinit var searchApi: SearchApi
 
     // Routing API
-    private lateinit var routingApi: RoutingApi
+    private lateinit var routingPlanner: RoutePlanner
 
     // Dynamic routing engine for creating routes.
-    private lateinit var dynamicRoutingApi: DynamicRoutingApi
+    private lateinit var RoutingReplanner: RouteReplanner
 
     // API Key for map and apis
     private val apikey= BuildConfig.TomTomApiKey // https://developer.tomtom.com/user/register
 
     // Default map center
-    private val amsterdamCenter = GeoCoordinate(52.377956, 4.897070)
+    private val amsterdamCenter = GeoPoint(52.377956, 4.897070)
 
     // SearchFragment Configuration
     private val searchApiParameters = SearchApiParameters(
@@ -189,7 +196,7 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
 
     }
     // set a marker to the coordinates. It gets replaced everytime
-    private fun setMarker(position: GeoCoordinate) {
+    private fun setMarker(position: GeoPoint) {
         searchMarker?.remove()
         val markerOptions = MarkerOptions(
             coordinate = position,
@@ -226,7 +233,7 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
             .commit()
 
         // Location Engine
-        locationEngine = AndroidLocationEngine(context = this)
+        locationEngine = AndroidLocationProvider(context = this)
 
         // Lets check for FINE LOCATION permissions ...
         if (ActivityCompat.checkSelfPermission(
@@ -247,15 +254,15 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
 
 
         // Add routing API
-        routingApi = OnlineRoutingApi.create(context = this, apiKey = apikey)
-        dynamicRoutingApi = OnlineDynamicRoutingApi.create(routingApi)
+        routingPlanner = OnlineRoutePlanner.create(context = this, apiKey = apikey)
+        RoutingReplanner = DefaultRouteReplanner.create(routingPlanner)
 
         // Adding Navigation
         val navigationConfiguration = NavigationConfiguration(
             context = this,
             apiKey = apikey,
-            locationEngine = locationEngine,
-            dynamicRoutingApi = dynamicRoutingApi
+            locationProvider = locationEngine,
+            routeReplanner = RoutingReplanner
         )
         tomtomNavigation = TomTomNavigation.create(navigationConfiguration)
 
@@ -294,15 +301,15 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
     }
 
     private fun setMapMatchedLocationEngine() {
-        val mapMatchedLocationEngine = MapMatchedLocationEngine(tomtomNavigation)
-        tomTomMap.setLocationEngine(mapMatchedLocationEngine)
+        val mapMatchedLocationEngine = MapMatchedLocationProvider(tomtomNavigation)
+        tomTomMap.setLocationProvider(mapMatchedLocationEngine)
         mapMatchedLocationEngine.enable()
     }
 
     private fun stopNavigation() {
         navigationFragment.stopNavigation()
         tomTomMap.changeCameraTrackingMode(CameraTrackingMode.NONE)
-        tomTomMap.enableLocationMarker(LocationMarkerOptions(LocationMarkerType.POINTER))
+        tomTomMap.enableLocationMarker(LocationMarkerOptions(type = LocationMarkerOptions.Type.POINTER))
         tomTomMap.removeRoutes()
     }
 
@@ -320,7 +327,7 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
     private val navigationListener = object : NavigationFragment.NavigationListener {
         override fun onStarted() {
             tomTomMap.changeCameraTrackingMode(CameraTrackingMode.FOLLOW_ROUTE)
-            tomTomMap.enableLocationMarker(LocationMarkerOptions(LocationMarkerType.CHEVRON))
+            tomTomMap.enableLocationMarker(LocationMarkerOptions(LocationMarkerOptions.Type.CHEVRON))
             setMapMatchedLocationEngine()
             setMapNavigationPadding()
         }
@@ -366,8 +373,8 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
     private fun enableUserLocation() {
 
         // Getting locations to the map
-        tomTomMap.setLocationEngine(locationEngine)
-        val locationMarker = LocationMarkerOptions(type=LocationMarkerType.POINTER)
+        tomTomMap.setLocationProvider(locationEngine)
+        val locationMarker = LocationMarkerOptions(type= LocationMarkerOptions.Type.POINTER)
         tomTomMap.enableLocationMarker(locationMarker)
     }
 
@@ -393,7 +400,7 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
         return routeInstructions.map {
             Instruction(
                 routeOffset = it.routeOffset,
-                combineWithNext = it.isPossibleToCombineWithNext
+                combineWithNext = it.combineWithNext
             )
         }
     }
@@ -413,7 +420,7 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
 
     }
 
-    private fun createRoute(destination: GeoCoordinate) {
+    private fun createRoute(destination: GeoPoint) {
         val userLocation = tomTomMap.currentLocation?.position ?: return
         val itinerary = Itinerary(origin = userLocation, destination = destination)
         planRouteOptions = RoutePlanningOptions(
@@ -421,13 +428,13 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
             guidanceOptions = GuidanceOptions(
                 instructionType = InstructionType.TEXT,
                 phoneticsType = InstructionPhoneticsType.IPA,
-                announcementPoints = AnnouncementPoints.ALL,
-                extendedSections = ExtendedSections.ALL,
-                progressPoints = ProgressPoints.ALL
+                announcementPoints = AnnouncementPoints.All,
+                extendedSections = ExtendedSections.All,
+                progressPoints = ProgressPoints.All
             ),
             vehicle = Vehicle.Car()
         )
-        routingApi.planRoute( planRouteOptions, routePlanningCallback)
+        routingPlanner.planRoute( planRouteOptions, routePlanningCallback)
     }
 
     // We are going to listen to the current location to move the map
@@ -457,7 +464,7 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
         locationEngine.removeOnLocationUpdateListener(locationUpdateListener)
     }
 
-    override fun onNavigate(destination: GeoCoordinate) {
+    override fun onNavigate(destination: GeoPoint) {
         createRoute(destination)
     }
 
