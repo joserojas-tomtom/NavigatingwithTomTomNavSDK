@@ -203,7 +203,7 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
         searchMarker?.remove()
         val markerOptions = MarkerOptions(
             coordinate = position,
-            pinImage = ImageFactory.fromResource(com.tomtom.sdk.search.ui.R.drawable.ic_pin)
+            pinImage = ImageFactory.fromResource(R.drawable.ic_tomtom_pin)
         )
         searchMarker = this.tomTomMap.addMarker(markerOptions)
     }
@@ -353,6 +353,7 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
             tomTomMap.enableLocationMarker(LocationMarkerOptions(LocationMarkerOptions.Type.CHEVRON))
             setMapMatchedLocationEngine()
             setMapNavigationPadding()
+            removeMarker()
         }
 
         override fun onFailed(error: NavigationError) {
