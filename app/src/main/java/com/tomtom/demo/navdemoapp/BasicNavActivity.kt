@@ -98,6 +98,9 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
     // Dynamic routing engine for creating routes.
     private lateinit var RoutingReplanner: RouteReplanner
 
+    // Location update listener - for when we get GPS updates
+    private lateinit var locationUpdateListener:OnLocationUpdateListener
+
     // API Key for map and apis
     private val apikey= BuildConfig.TomTomApiKey // https://developer.tomtom.com/user/register
 
@@ -299,6 +302,7 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
         navGroupContainer = findViewById(R.id.nav_group_container)
     }
 
+
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>,
                                             grantResults: IntArray) {
@@ -456,18 +460,6 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
         routingPlanner.planRoute( planRouteOptions, routePlanningCallback)
     }
 
-    // We are going to listen to the current location to move the map
-    // initially, but when we are navigating this is done automatically,
-    // so this listener should be deactivated.
-    private val locationUpdateListener = OnLocationUpdateListener { location ->
-        try {
-            tomTomMap.moveCamera(CameraOptions(position = location.position))
-        } catch (exception: Exception) {
-            // do nothing because the map could be already
-            // invalidated.
-        }
-    }
-
     private fun setUpMapListeners() {
 
         tomTomMap.addOnMapClickListener {
@@ -475,7 +467,20 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
             return@addOnMapClickListener true
         }
 
-        // locationEngine.addOnLocationUpdateListener(locationUpdateListener)
+
+        // We are going to listen to the current location to move the map
+        // initially, but when we are navigating this is done automatically,
+        // so this listener should be deactivated.
+        locationUpdateListener = OnLocationUpdateListener { location ->
+            try {
+                tomTomMap.moveCamera(CameraOptions(position = location.position))
+            } catch (exception: Exception) {
+                // do nothing because the map could be already
+                // invalidated.
+            }
+            locationEngine.removeOnLocationUpdateListener(locationUpdateListener)
+        }
+        locationEngine.addOnLocationUpdateListener(locationUpdateListener)
     }
 
     override fun onDestroy() {
