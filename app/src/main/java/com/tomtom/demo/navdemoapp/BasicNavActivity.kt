@@ -246,10 +246,23 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
         ) {
             val COARSE_REQUEST_CODE = 101
             ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
                 COARSE_REQUEST_CODE)
             return
         }
+
+        // Check for Media permission
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED) {
+            val COARSE_REQUEST_CODE = 102
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
+                COARSE_REQUEST_CODE)
+            return
+        }
+
         locationEngine.enable()
 
 
@@ -295,6 +308,12 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
 
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this@BasicNavActivity,"Give me access to location!", Toast.LENGTH_LONG).show()
+                }
+            }
+            102 -> {
+
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this@BasicNavActivity,"Give me access to Storage!", Toast.LENGTH_LONG).show()
                 }
             }
         }
