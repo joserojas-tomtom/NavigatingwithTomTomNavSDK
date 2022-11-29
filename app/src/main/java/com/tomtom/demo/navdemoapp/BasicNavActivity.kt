@@ -486,7 +486,9 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
 
     override fun onDestroy() {
         super.onDestroy()
-        locationEngine.removeOnLocationUpdateListener(locationUpdateListener)
+        if (this::locationUpdateListener.isInitialized) {
+            locationEngine.removeOnLocationUpdateListener(locationUpdateListener)
+        }
     }
 
     override fun onNavigate(destination: GeoPoint) {
