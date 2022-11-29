@@ -406,7 +406,6 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
         override fun onSuccess(result: RoutePlanningResult) {
             route = result.routes.first()
             drawRoute(route)
-            navigate()
         }
 
         override fun onError(error: RoutingError) {
@@ -492,11 +491,21 @@ class BasicNavActivity : AppCompatActivity() , RouteProcessFragment.NavigateOpti
     }
 
     override fun onNavigate(destination: GeoPoint) {
-        createRoute(destination)
+        navigate()
     }
 
     override fun onCancel() {
         removeRoutingOptionsFragment()
         addSearchFragment()
+        removeMarker()
+        tomTomMap.removeRoutes()
+    }
+
+    override fun removeRoute() {
+        tomTomMap.removeRoutes()
+    }
+
+    override fun onRoute(destination: GeoPoint) {
+        createRoute(destination)
     }
 }

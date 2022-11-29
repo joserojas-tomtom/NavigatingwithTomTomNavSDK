@@ -21,11 +21,20 @@
 
         <Button
             android:id="@+id/navigateButton"
+            android:visibility="gone"
             android:layout_width="136dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:text="@string/navigate" />
+
+        <Button
+            android:id="@+id/routeButton"
+            android:layout_width="136dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:text="@string/route" />
 
         <Button
             android:id="@+id/cancelButton"

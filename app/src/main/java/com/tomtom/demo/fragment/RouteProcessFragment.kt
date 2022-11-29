@@ -27,6 +27,8 @@ class RouteProcessFragment(place: Place, navigationInterface: NavigateOptionsInt
     interface NavigateOptionsInterface {
         fun onNavigate(destination: GeoPoint)
         fun onCancel()
+        fun onRoute(destination: GeoPoint)
+        fun removeRoute()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,10 +48,28 @@ class RouteProcessFragment(place: Place, navigationInterface: NavigateOptionsInt
         addressField.setText(address)
 
         val navigateButton = view.findViewById<Button>(R.id.navigateButton)
-        navigateButton.setOnClickListener { listener.onNavigate(destination.position) }
+        navigateButton.setOnClickListener {
+            listener.onNavigate(destination.position)
+        }
+
+        val routeButton = view.findViewById<Button>(R.id.routeButton)
+        routeButton.setOnClickListener {
+            navigateButton.visibility = View.VISIBLE
+            routeButton.visibility = View.GONE
+            listener.onRoute(destination.position)
+        }
 
         val cancelButton = view.findViewById<Button>(R.id.cancelButton)
-        cancelButton.setOnClickListener { listener.onCancel() }
+        cancelButton.setOnClickListener {
+            if (navigateButton.visibility == View.VISIBLE ) {
+                navigateButton.visibility = View.GONE
+                routeButton.visibility = View.VISIBLE
+                listener.removeRoute()
+            }
+            else {
+                listener.onCancel()
+            }
+        }
 
         return view
     }
