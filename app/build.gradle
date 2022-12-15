@@ -37,8 +37,14 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    Properties properties = new Properties()
+    if (project.rootProject.file('local.properties').canRead()) {
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+    }
+
     buildTypes.each {
-        it.buildConfigField 'String', 'TomTomApiKey', TomTomApiKey
+        it.buildConfigField 'String', 'TomTomApiKey', properties.getProperty('TomTomApiKey','""')
     }
 }
 
