@@ -8,15 +8,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
-
-      - name: Setup JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-
-      - name: Build Demo App
-        run: ./gradlew assemble
 
       - name: Android Build from MarketPlace
         uses: vgaidarji/android-github-actions-build@v1.0.1
+        with:
+          args: "./gradlew assembleDebug"
