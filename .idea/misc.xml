@@ -5,7 +5,12 @@
       <map>
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3572916666666667" />
         <entry key="app/src/main/res/layout/activity_main_menu.xml" value="0.30732421875000004" />
+        <entry key="app/src/main/res/layout/activity_map_demo.xml" value="0.2066497802734375" />
         <entry key="app/src/main/res/layout/activity_mapdemo_detail.xml" value="0.1752786220871327" />
+        <entry key="app/src/main/res/layout/activity_navigation_demo.xml" value="0.24427083333333333" />
+        <entry key="app/src/main/res/layout/activity_offline_maps_demo.xml" value="0.24427083333333333" />
+        <entry key="app/src/main/res/layout/activity_routing_demo.xml" value="0.24427083333333333" />
+        <entry key="app/src/main/res/layout/activity_search_demo.xml" value="0.24427083333333333" />
         <entry key="app/src/main/res/layout/fragment_mapdemo_detail.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fragment_mapdemo_list.xml" value="0.1752786220871327" />
         <entry key="app/src/main/res/layout/fragment_route_process.xml" value="0.265625" />
