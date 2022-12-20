@@ -17,3 +17,6 @@ jobs:
 
       - name: Build Demo App
         run: ./gradlew assemble
+
+      - name: Android Build from MarketPlace
+        uses: vgaidarji/android-github-actions-build@v1.0.1
